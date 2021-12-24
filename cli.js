@@ -15,14 +15,19 @@ async function run() {
         path: 'README.md'
     });
 
-    console.log(readme.sha);
+    const content = Buffer.from(readme.content, 'base64').toString();
+
+    const updated = bumpBoopCounter(content);
+
+    console.log(updated);
 
     const response = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
         owner: 'daniel-benzion',
         repo: 'daniel-benzion',
         path: 'README.md',
         message: 'BOOP',
-        content: 'boop boop'
+        content: Buffer.from(updated, 'utf-8').toString('base64'),
+        sha: readme.sha
     });
     console.dir(response.data);
 }
