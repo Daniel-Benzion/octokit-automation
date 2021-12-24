@@ -5,9 +5,26 @@ const octokit = new Octokit({
 });
 
 async function run() {
-    const response = await octokit.request('GET /user');
+    const { data: user } = await octokit.request('GET /user');
 
-    console.log('Authenticated as ' + response.data.login);
+    console.log('Authenticated as ' + user.login);
+
+    const { data: readme } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+        owner: 'daniel-benzion',
+        repo: 'daniel-benzion',
+        path: 'README.md'
+    });
+
+    console.log(readme.sha);
+
+    const response = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
+        owner: 'daniel-benzion',
+        repo: 'daniel-benzion',
+        path: 'README.md',
+        message: 'BOOP',
+        content: 'boop boop'
+    });
+    console.dir(response.data);
 }
 
 run();
